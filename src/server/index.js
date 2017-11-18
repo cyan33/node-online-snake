@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    // delete state[socket.id]
+    delete state[socket.id]
     console.log('user disconnected');
   });
 });
