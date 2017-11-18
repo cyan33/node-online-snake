@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/main.js",
   "scripts": {
-    "server": "./node_modules/.bin/nodemon ./server/index.js",
+    "server": "./node_modules/.bin/nodemon ./src/server/index.js",
     "build": "webpack",
     "watch": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -12,7 +12,7 @@ app.use('/dist', express.static('dist'))
 
 app.use('/src', express.static('src'))
 app.get('/', function(req, res){
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../../index.html'));
 });
 
 const state = {
