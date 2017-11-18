@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+    margin: 50px auto;
+}
+
+#snake {
+    display: block;
+}
+
+.score-panel {
+    width: 200px;
+    height: 600px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 2;
+    border: 1px solid gray;
+    border-left: none;
+    letter-spacing: 1px;
+}
+
+.restart-layer {
+    display: none;
+    background-color: rgba(128,128,128, 0.8);
+    position: absolute;
+    height: 620px;
+    width: 800px;
+}
+
+.restart-layer button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 40px;
+    color: white;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background: linear-gradient(#2ec56e, #079c35);
+    box-shadow: -5px 5px 8px #888888;
+    cursor: pointer;
+}
+
+.restart-layer button:hover, .restart-layer button:focus {
+    background: linear-gradient(#079c35, #2ec56e);
+}

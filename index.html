@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<title>Snake</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="src/style.css">
+<body>
+    <div class="container">
+        <canvas id="snake" width="600px" height="600px">
+            Canvas not supported
+        </canvas>
+        <div class="restart-layer">
+            <button class="restart-button">Restart</button>
+        </div>
+        <div class="score-panel">
+            <div class="highest">
+                <b>Highest Score</b>
+                <div class="score"></div>
+            </div>
+            <div class="current">
+                <b>Current Score</b>
+                <div class="score"></div>
+            </div>
+        </div>
+    </div>
+    <script src="dist/bundle.js"></script>
+</body>
+</html>
