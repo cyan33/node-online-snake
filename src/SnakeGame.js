@@ -3,7 +3,8 @@ import socket from 'socket.io-client'
 import KeyBus from './engine/KeyBus'
 import Game from './engine/Game'
 import { drawWalls, drawObstacles, initAudio, initObstacles, initSnake, drawSnake, moveSnake,
-    initFood, drawFood, checkFood, removeSpoiledFood, createSpoiledFood, initSpoiledFood} from './helper'
+    initFood, drawFood, checkFood, removeSpoiledFood, createSpoiledFood, initSpoiledFood,
+    showRestartLayer, reload } from './helper'
 import { 
     UP, DOWN, RIGHT, LEFT,
     MOVING_SPEED, 
@@ -11,7 +12,9 @@ import {
     SPOILED_FOOD_TIMEOUT
 } from './options'
 
+const { RENDER, END_GAME, RESTART, CHANGE_DIRECTION } = require('./server/options');
 const NUM_OBSTACLES = 6;
+
 class SnakeGame extends Game {
     constructor() {
         super();
@@ -94,17 +97,27 @@ class SnakeGame extends Game {
     init() {
         this.io = socket()
         this.timer = setInterval(() => {
-            this.io.emit('change_direction', this.direction)
+            this.io.emit(CHANGE_DIRECTION, this.direction)
+            //this.io.emit('update');
         }, MOVING_SPEED);
 
         this.debug();
         this.addKeyboardHandlers();
         this.initScorePanel();
 
-        this.io.on('render', (state) => {
+        this.io.on(RENDER, (state) => {
             console.log(state)
             this.render(state)
-        })
+        });
+
+        this.io.on(END_GAME, () => {
+            clearInterval(this.timer);
+            showRestartLayer(this.io); // needs to broadcast to both players
+        });
+
+        this.io.on(RESTART, () => {
+            reload();
+        });
     }
 }
 

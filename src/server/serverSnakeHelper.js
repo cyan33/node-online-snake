@@ -1,3 +1,6 @@
+const { ROWS, COLS } = require('./options');
+const { getRandomNumber } = require('./operations');
+
 class Segment {
   constructor(size, { x, y }) {
       this.size = size
@@ -5,15 +8,19 @@ class Segment {
   }
 }
 
-function initSnake() {
+function initSnake(yPos) {
   // 600 x 600 => 40 x 40
   const SNAKE_INIT_LENGTH = 5;
   let segments = []
   for (let i = SNAKE_INIT_LENGTH - 1; i >= 0; i--) {
       // the position is the relative index, not the exact pixel
-      segments.push(new Segment({width:1, height:1}, { x: i, y: 0 }));
+      segments.push(new Segment({width:1, height:1}, { x: i, y: yPos }));
   }
   return segments;
+}
+
+function getRandomLocation() {
+  return getRandomNumber(COLS - 10);
 }
 
 function moveSnake(player, scene) {
@@ -37,15 +44,14 @@ function moveSnake(player, scene) {
   else if (direction === 'UP') ny -= 1;
   else if (direction === 'DOWN') ny += 1;
   // check collision with itself, crosses the wall, or hits an obstacle
-  // if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)
-  //     // || isCollidesObstacle({x: nx, y: ny, size: head.size}, obstacles)
-  // ) {
-  //     updateLocalStorage(this.currScore);
+  if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
+    return false;  
+    // updateLocalStorage(this.currScore);
 
-  //     // audio.getAudioByName(COLLISION_AUDIO).play();
-  //     clearInterval(this.timer);
-  //     showRestartLayer();
-  // }
+      // // audio.getAudioByName(COLLISION_AUDIO).play();
+      // clearInterval(this.timer);
+      // showRestartLayer();
+  }
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
   // var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
@@ -66,19 +72,49 @@ function moveSnake(player, scene) {
   segments.pop()
 
   segments.unshift(head);
-  return segments;
+  return true;
+}
+
+function isCollidesWall(head) {
+  // head.x, head.y
+  return head.x >= ROWS || head.x < 0 || head.y >= COLS || head.y < 0;
+}
+
+function isCollidesItself(head, snakeSegments) {
+  for (let i = 0; i < snakeSegments.length; i++) {
+      if (head.x == snakeSegments[i].position.x && head.y == snakeSegments[i].position.y) {
+          return true;
+      }
+  }
+  return false;
+}
+// To be implemented
+function isCollidesOpponent(head, otherSegments, gameType) {
+  // Only perform if its a multiplayer variant
+  // Check collisions for the head to each opponent's segments
+  for(let i = 0; i < otherSegments.length; i++) {
+      if(head.x === otherSegments[i].position.x && head.y === otherSegments[i].position.y) {
+          return true;
+      }
+  }
+  return false;
 }
 
 function update(state) {
   const { scene } = state
+  // Initially detect no collision
+  let result = true;
   for (let key in state) {
     if (key === 'scene')  continue
-    moveSnake(state[key], scene)
+    // If any collision occurs, update the result
+    if(!moveSnake(state[key], scene)) result = false;
   }
+  return result;
 }
 
 module.exports = {
   update,
   moveSnake,
-  initSnake
+  initSnake,
+  getRandomLocation
 }

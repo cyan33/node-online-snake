@@ -1,4 +1,6 @@
 import Segment from './Segment'
+const { RESTART_CLICKED } = require('./server/options');
+
 import { 
     SEGMENT_WIDTH, SNAKE_INIT_LENGTH, LEFT, UP, RIGHT, DOWN,
     ROWS, COLS, OBSTACLE_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT,
@@ -107,12 +109,14 @@ function updateLocalStorage(score) {
     }
 }
 
-function showRestartLayer() {
+export function showRestartLayer(io) {
     document.querySelector('.restart-layer').style.display = 'block';
-    document.querySelector("button").addEventListener("click", reload);
+    document.querySelector("button").addEventListener("click", () => {
+        io.emit(RESTART_CLICKED);
+    });
 }
 
-function reload() {
+export function reload() {
     location.reload();
 }
 
