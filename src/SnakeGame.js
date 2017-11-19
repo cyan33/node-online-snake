@@ -12,7 +12,9 @@ import {
     SPOILED_FOOD_TIMEOUT
 } from './options'
 
+const { RENDER, END_GAME, RESTART, CHANGE_DIRECTION } = require('./server/options');
 const NUM_OBSTACLES = 6;
+
 class SnakeGame extends Game {
     constructor() {
         super();
@@ -95,25 +97,25 @@ class SnakeGame extends Game {
     init() {
         this.io = socket()
         this.timer = setInterval(() => {
-            this.io.emit('change_direction', this.direction)
-            this.io.emit('update');
+            this.io.emit(CHANGE_DIRECTION, this.direction)
+            //this.io.emit('update');
         }, MOVING_SPEED);
 
         this.debug();
         this.addKeyboardHandlers();
         this.initScorePanel();
 
-        this.io.on('render', (state) => {
+        this.io.on(RENDER, (state) => {
             console.log(state)
             this.render(state)
         });
 
-        this.io.on('endGame', () => {
+        this.io.on(END_GAME, () => {
             clearInterval(this.timer);
             showRestartLayer(this.io); // needs to broadcast to both players
         });
 
-        this.io.on('restart', () => {
+        this.io.on(RESTART, () => {
             reload();
         });
     }

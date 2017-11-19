@@ -1,7 +1,9 @@
-const socket = require('socket.io')
+const socket = require('socket.io');
+const state = require('./state');
 
-const state = require('./state')
-const { update, moveSnake, initSnake } = require('./serverSnakeHelper')
+const { update, moveSnake, initSnake, getRandomLocation } = require('./serverSnakeHelper')
+const { getRandomNumber } = require('./operations');
+const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART } = require('./options');
 
 function createIO(http) {
   const io = socket(http)
@@ -10,16 +12,15 @@ function createIO(http) {
     listen() {
       io.on('connection', (socket) => {
         console.log(`a user connected, id: ${socket.id}`);
-        let isHost = true;
-        if(Object.keys(state).length >= 1) isHost = false;
-        console.log(`isHost: ${isHost}`);
+        // let isHost = true;
+        // if(Object.keys(state).length >= 1) isHost = false;
+        // console.log(`isHost: ${isHost}`);
         state[socket.id] = {
           direction: 'RIGHT',
-          segments: initSnake(isHost? 0 : 30),
-          isHost: isHost
+          segments: initSnake(getRandomLocation()),
         }
       
-        socket.on('change_direction', (direction) => {
+        socket.on(CHANGE_DIRECTION, (direction) => {
           state[socket.id].direction = direction
         })
       
@@ -28,18 +29,17 @@ function createIO(http) {
           console.log('user disconnected');
         });
 
-        socket.on('restartClicked', () => {
-          io.sockets.emit('restart');
+        socket.on(RESTART_CLICKED, () => {
+          io.sockets.emit(RESTART);
         });
       });
 
       setInterval(() => {
         let result = update(state);
-        console.log(result);
         if(!result) {
-          io.sockets.emit('endGame');
+          io.sockets.emit(END_GAME);
         } else {
-          io.sockets.emit('render', state);
+          io.sockets.emit(RENDER, state);
         }
        }, 250);
     }

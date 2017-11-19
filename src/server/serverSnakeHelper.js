@@ -1,4 +1,6 @@
 const { ROWS, COLS } = require('./options');
+const { getRandomNumber } = require('./operations');
+
 class Segment {
   constructor(size, { x, y }) {
       this.size = size
@@ -15,6 +17,10 @@ function initSnake(yPos) {
       segments.push(new Segment({width:1, height:1}, { x: i, y: yPos }));
   }
   return segments;
+}
+
+function getRandomLocation() {
+  return getRandomNumber(COLS - 10);
 }
 
 function moveSnake(player, scene) {
@@ -39,7 +45,6 @@ function moveSnake(player, scene) {
   else if (direction === 'DOWN') ny += 1;
   // check collision with itself, crosses the wall, or hits an obstacle
   if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
-    console.log('collision detected');
     return false;  
     // updateLocalStorage(this.currScore);
 
@@ -110,5 +115,6 @@ function update(state) {
 module.exports = {
   update,
   moveSnake,
-  initSnake
+  initSnake,
+  getRandomLocation
 }

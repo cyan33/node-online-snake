@@ -29,4 +29,10 @@ const AUDIO = [COLLISION_AUDIO, POWERUP_AUDIO, POWERDOWN_AUDIO];
 
 const SPOILED_FOOD_TIMEOUT = 7000;
 
-module.exports = { ROWS, COLS };
+const CHANGE_DIRECTION = 'change-direction';
+const RESTART_CLICKED = 'restart-clicked';
+const RENDER = 'render';
+const END_GAME = 'end-game';
+const RESTART = 'restart';
+
+module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION };
