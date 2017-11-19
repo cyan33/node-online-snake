@@ -10,10 +10,13 @@ function createIO(http) {
     listen() {
       io.on('connection', (socket) => {
         console.log(`a user connected, id: ${socket.id}`);
-      
+        let isHost = true;
+        if(Object.keys(state).length >= 1) isHost = false;
+        console.log(`isHost: ${isHost}`);
         state[socket.id] = {
           direction: 'RIGHT',
-          segments: initSnake(),
+          segments: initSnake(isHost? 0 : 30),
+          isHost: isHost
         }
       
         socket.on('change_direction', (direction) => {
@@ -24,12 +27,21 @@ function createIO(http) {
           delete state[socket.id]
           console.log('user disconnected');
         });
+
+        socket.on('restartClicked', () => {
+          io.sockets.emit('restart');
+        });
       });
-      
+
       setInterval(() => {
-        update(state)
-        io.sockets.emit('render', state)
-      }, 250)
+        let result = update(state);
+        console.log(result);
+        if(!result) {
+          io.sockets.emit('endGame');
+        } else {
+          io.sockets.emit('render', state);
+        }
+       }, 250);
     }
   }
 }

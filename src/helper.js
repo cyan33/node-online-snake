@@ -107,12 +107,14 @@ function updateLocalStorage(score) {
     }
 }
 
-function showRestartLayer() {
+export function showRestartLayer(io) {
     document.querySelector('.restart-layer').style.display = 'block';
-    document.querySelector("button").addEventListener("click", reload);
+    document.querySelector("button").addEventListener("click", () => {
+        io.emit('restartClicked');
+    });
 }
 
-function reload() {
+export function reload() {
     location.reload();
 }
 

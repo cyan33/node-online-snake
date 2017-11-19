@@ -3,7 +3,8 @@ import socket from 'socket.io-client'
 import KeyBus from './engine/KeyBus'
 import Game from './engine/Game'
 import { drawWalls, drawObstacles, initAudio, initObstacles, initSnake, drawSnake, moveSnake,
-    initFood, drawFood, checkFood, removeSpoiledFood, createSpoiledFood, initSpoiledFood} from './helper'
+    initFood, drawFood, checkFood, removeSpoiledFood, createSpoiledFood, initSpoiledFood,
+    showRestartLayer, reload } from './helper'
 import { 
     UP, DOWN, RIGHT, LEFT,
     MOVING_SPEED, 
@@ -95,6 +96,7 @@ class SnakeGame extends Game {
         this.io = socket()
         this.timer = setInterval(() => {
             this.io.emit('change_direction', this.direction)
+            this.io.emit('update');
         }, MOVING_SPEED);
 
         this.debug();
@@ -104,7 +106,16 @@ class SnakeGame extends Game {
         this.io.on('render', (state) => {
             console.log(state)
             this.render(state)
-        })
+        });
+
+        this.io.on('endGame', () => {
+            clearInterval(this.timer);
+            showRestartLayer(this.io); // needs to broadcast to both players
+        });
+
+        this.io.on('restart', () => {
+            reload();
+        });
     }
 }
 
