@@ -41,7 +41,7 @@ function createIO(http) {
       });
 
       setInterval(() => {
-        let result = update();
+        let result = update(state);
         if(!result) {
           io.sockets.emit(END_GAME);
         } else {
