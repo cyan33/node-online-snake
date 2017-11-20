@@ -1,6 +1,5 @@
 const { ROWS, COLS } = require('./options');
 const { getRandomNumber } = require('./operations');
-const state = require('./state');
 
 class Segment {
   constructor(size, { x, y }) {
@@ -77,7 +76,6 @@ function moveSnake(player, scene) {
   } else {
       segments.pop();
   }
-  //segments.pop()
 
   segments.unshift(head);
   return true;
@@ -129,7 +127,7 @@ function initFood(obstacles) {
     return food;
 }
 
-function update() {
+function update(state) {
   const { scene } = state
   // Initially detect no collision
   let result = true;
