@@ -1,7 +1,7 @@
 const socket = require('socket.io');
 const state = require('./state');
 
-const { update, moveSnake, initSnake, getRandomLocation } = require('./serverSnakeHelper')
+const { update, moveSnake, initSnake, getRandomLocation, initFood } = require('./serverSnakeHelper')
 const { getRandomNumber } = require('./operations');
 const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART } = require('./options');
 
@@ -19,7 +19,13 @@ function createIO(http) {
           direction: 'RIGHT',
           segments: initSnake(getRandomLocation()),
         }
-      
+        if (state.scene == null) {
+            state.scene = {
+                food: initFood(null),
+                spoiledFood: initFood(null)
+            }
+        }
+
         socket.on(CHANGE_DIRECTION, (direction) => {
           state[socket.id].direction = direction
         })
@@ -35,7 +41,7 @@ function createIO(http) {
       });
 
       setInterval(() => {
-        let result = update(state);
+        let result = update();
         if(!result) {
           io.sockets.emit(END_GAME);
         } else {

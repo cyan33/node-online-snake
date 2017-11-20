@@ -1,11 +1,19 @@
 const { ROWS, COLS } = require('./options');
 const { getRandomNumber } = require('./operations');
+const state = require('./state');
 
 class Segment {
   constructor(size, { x, y }) {
       this.size = size
       this.position = { x, y }
   }
+}
+
+class Food {
+    constructor(size, { x, y }) {
+        this.size = size
+        this.position = { x, y }
+    }
 }
 
 function initSnake(yPos) {
@@ -33,7 +41,7 @@ function moveSnake(player, scene) {
       // audio
   } = player;
 
-  // const { food } = scene;
+  const { food, spoiledFood } = scene;
 
   // construct a new head segment according to the moving direction
   let head = segments[0];
@@ -54,22 +62,22 @@ function moveSnake(player, scene) {
   }
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
-  // var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
-  // if (collision == 1) {
-  //     // score++ and call this.initScorePanel()
-  //     // audio.getAudioByName(POWERUP_AUDIO).play();
-  //     this.currScore++;
-  //     this.initScorePanel();
-  // } else if (collision == -1){
-  //     // audio.getAudioByName(POWERDOWN_AUDIO).play();
-  //     this.currScore--;
-  //     this.initScorePanel();
-  //     segments.pop();
-  //     segments.pop();
-  // } else {
-  //     segments.pop();
-  // }
-  segments.pop()
+  var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
+  if (collision == 1) {
+      // score++ and call this.initScorePanel()
+      // audio.getAudioByName(POWERUP_AUDIO).play();
+      this.currScore++;
+      //this.initScorePanel();
+  } else if (collision == -1){
+      // audio.getAudioByName(POWERDOWN_AUDIO).play();
+      this.currScore--;
+      //this.initScorePanel();
+      segments.pop();
+      segments.pop();
+  } else {
+      segments.pop();
+  }
+  //segments.pop()
 
   segments.unshift(head);
   return true;
@@ -100,7 +108,28 @@ function isCollidesOpponent(head, otherSegments, gameType) {
   return false;
 }
 
-function update(state) {
+function isCollidesFood(head, food, spoiledFood = null) {
+    if(head.x === food.x && head.y === food.y){
+        return 1;
+    } else if (spoiledFood && head.x === spoiledFood.position.x && head.y === spoiledFood.position.y) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+function initFood(obstacles) {
+    let food = null;
+    // do {
+        let xPos = getRandomNumber(COLS);
+        let yPos = getRandomNumber(ROWS);
+        food = new Food(1, {x:xPos, y:yPos});
+    // } while(nearObstacles(food, obstacles, FOOD_FROM_OBSTACLE)
+    // || food.position.x >= COLS - 2 || food.position.y >= ROWS - 2);
+    return food;
+}
+
+function update() {
   const { scene } = state
   // Initially detect no collision
   let result = true;
@@ -116,5 +145,6 @@ module.exports = {
   update,
   moveSnake,
   initSnake,
-  getRandomLocation
+  getRandomLocation,
+  initFood,
 }
