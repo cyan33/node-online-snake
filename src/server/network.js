@@ -18,6 +18,7 @@ function createIO(http) {
         state[socket.id] = {
           direction: 'RIGHT',
           segments: initSnake(getRandomLocation()),
+          key: socket.id
         }
         if (state.scene == null) {
             state.scene = {

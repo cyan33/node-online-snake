@@ -18,10 +18,11 @@ function getRandomLocation() {
   return getRandomNumber(COLS - 10);
 }
 
-function moveSnake(player, scene) {
+function moveSnake(player, scene, state) {
   const { 
       segments,
       direction,
+      key
       // food,
       // spoiledFood,
       // obstacles,
@@ -38,7 +39,7 @@ function moveSnake(player, scene) {
   else if (direction === 'RIGHT') nx += 1;
   else if (direction === 'UP') ny -= 1;
   else if (direction === 'DOWN') ny += 1;
-  // check collision with itself, crosses the wall, or hits an obstacle
+  // check collision with itself or the wall
   if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
     return false;  
     // updateLocalStorage(this.currScore);
@@ -46,6 +47,14 @@ function moveSnake(player, scene) {
       // // audio.getAudioByName(COLLISION_AUDIO).play();
       // clearInterval(this.timer);
       // showRestartLayer();
+  }
+  // check for collision with other players
+  for(let id in state) {
+    if(key === id) continue;
+    let other = state[id].segments;
+    if(isCollidesOpponent({x: nx, y: ny}, other)) {
+      return false;
+    }
   }
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
@@ -76,20 +85,20 @@ function isCollidesWall(head) {
 
 function isCollidesItself(head, snakeSegments) {
   for (let i = 0; i < snakeSegments.length; i++) {
-      if (head.x == snakeSegments[i].position.x && head.y == snakeSegments[i].position.y) {
+      if (head.x === snakeSegments[i].position.x && head.y === snakeSegments[i].position.y) {
           return true;
       }
   }
   return false;
 }
 // To be implemented
-function isCollidesOpponent(head, otherSegments, gameType) {
+function isCollidesOpponent(head, otherSegments) {
   // Only perform if its a multiplayer variant
   // Check collisions for the head to each opponent's segments
   for(let i = 0; i < otherSegments.length; i++) {
-      if(head.x === otherSegments[i].position.x && head.y === otherSegments[i].position.y) {
-          return true;
-      }
+    if(head.x === otherSegments[i].position.x && head.y === otherSegments[i].position.y) {
+        return true;
+    }
   }
   return false;
 }
@@ -115,14 +124,20 @@ function initFood(obstacles) {
     return food;
 }
 
+function getPlayerCount(state) {
+  return Object.keys(state).length;
+
+}
+
 function update(state) {
   const { scene } = state
-  // Initially detect no collision
+  // Only run if there are at least 2 players
+  if(getPlayerCount(state) < 2) return true;
   let result = true;
   for (let key in state) {
     if (key === 'scene')  continue
     // If any collision occurs, update the result
-    if(!moveSnake(state[key], scene)) result = false;
+    if(!moveSnake(state[key], scene, state)) result = false;
   }
   return result;
 }
