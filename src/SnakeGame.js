@@ -109,9 +109,8 @@ class SnakeGame extends Game {
             this.render(state)
         });
 
-        this.io.on(END_GAME, (updateTimer) => {
+        this.io.on(END_GAME, () => {
             clearInterval(this.timer);
-            clearInterval(updateTimer);
             showRestartLayer(this.io); // needs to broadcast to both players
         });
 
