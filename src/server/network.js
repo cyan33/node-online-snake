@@ -22,8 +22,8 @@ function createIO(http) {
         }
         if (state.scene == null) {
             state.scene = {
-                food: initFood(null),
-                spoiledFood: initFood(null)
+                food: initFood(),
+                spoiledFood: initFood()
             }
         }
 

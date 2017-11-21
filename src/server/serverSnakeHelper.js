@@ -1,4 +1,4 @@
-const { ROWS, COLS } = require('./options');
+const { ROWS, COLS, SHRINK_LENGTH } = require('./options');
 const { getRandomNumber } = require('./operations');
 const Segment = require('../Segment');
 const Food = require('../Food');
@@ -23,10 +23,6 @@ function moveSnake(player, scene, state) {
       segments,
       direction,
       key
-      // food,
-      // spoiledFood,
-      // obstacles,
-      // audio
   } = player;
 
   const { food, spoiledFood } = scene;
@@ -41,12 +37,7 @@ function moveSnake(player, scene, state) {
   else if (direction === 'DOWN') ny += 1;
   // check collision with itself or the wall
   if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
-    return false;  
-    // updateLocalStorage(this.currScore);
-
-      // // audio.getAudioByName(COLLISION_AUDIO).play();
-      // clearInterval(this.timer);
-      // showRestartLayer();
+    return false;
   }
   // check for collision with other players
   for(let id in state) {
@@ -59,19 +50,12 @@ function moveSnake(player, scene, state) {
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
   var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
-  if (collision == 1) {
-      // score++ and call this.initScorePanel()
-      // audio.getAudioByName(POWERUP_AUDIO).play();
-      this.currScore++;
-      //this.initScorePanel();
+  if (collision == 0) {
+      segments.pop();
   } else if (collision == -1){
-      // audio.getAudioByName(POWERDOWN_AUDIO).play();
-      this.currScore--;
-      //this.initScorePanel();
-      segments.pop();
-      segments.pop();
-  } else {
-      segments.pop();
+      for (let i = 0; i < SHRINK_LENGTH; i++) {
+          segments.pop();
+      }
   }
 
   segments.unshift(head);
@@ -115,12 +99,9 @@ function isCollidesFood(head, food, spoiledFood = null) {
 
 function initFood(obstacles) {
     let food = null;
-    // do {
-        let xPos = getRandomNumber(COLS);
-        let yPos = getRandomNumber(ROWS);
-        food = new Food(1, {x:xPos, y:yPos});
-    // } while(nearObstacles(food, obstacles, FOOD_FROM_OBSTACLE)
-    // || food.position.x >= COLS - 2 || food.position.y >= ROWS - 2);
+    let xPos = getRandomNumber(COLS);
+    let yPos = getRandomNumber(ROWS);
+    food = new Food(1, {x:xPos, y:yPos});
     return food;
 }
 
