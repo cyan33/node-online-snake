@@ -35,4 +35,6 @@ const RENDER = 'render';
 const END_GAME = 'end-game';
 const RESTART = 'restart';
 
-module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION };
+const SHRINK_LENGTH = 2;
+
+module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION, SHRINK_LENGTH };

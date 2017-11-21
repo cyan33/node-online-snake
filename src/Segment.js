@@ -1,9 +1,10 @@
-import Sprite from './engine/Sprite'
-
-class Segment extends Sprite {
-    constructor(size, { x, y }) {
-        super('', size, { x, y });
-    }
+class Segment {
+  constructor(size, { x, y }) {
+      this.size = size
+      this.position = { x, y }
+  }
 }
 
-export default Segment
+module.exports = Segment;
+
+

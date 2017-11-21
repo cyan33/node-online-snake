@@ -1,12 +1,7 @@
-const { ROWS, COLS } = require('./options');
+const { ROWS, COLS, SHRINK_LENGTH } = require('./options');
 const { getRandomNumber } = require('./operations');
-
-class Segment {
-  constructor(size, { x, y }) {
-      this.size = size
-      this.position = { x, y }
-  }
-}
+const Segment = require('../Segment');
+const Food = require('../Food');
 
 function initSnake(yPos) {
   // 600 x 600 => 40 x 40
@@ -28,13 +23,9 @@ function moveSnake(player, scene, state) {
       segments,
       direction,
       key
-      // food,
-      // spoiledFood,
-      // obstacles,
-      // audio
   } = player;
 
-  // const { food } = scene;
+  const { food, spoiledFood } = scene;
 
   // construct a new head segment according to the moving direction
   let head = segments[0];
@@ -46,12 +37,7 @@ function moveSnake(player, scene, state) {
   else if (direction === 'DOWN') ny += 1;
   // check collision with itself or the wall
   if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
-    return false;  
-    // updateLocalStorage(this.currScore);
-
-      // // audio.getAudioByName(COLLISION_AUDIO).play();
-      // clearInterval(this.timer);
-      // showRestartLayer();
+    return false;
   }
   // check for collision with other players
   for(let id in state) {
@@ -63,22 +49,14 @@ function moveSnake(player, scene, state) {
   }
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
-  // var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
-  // if (collision == 1) {
-  //     // score++ and call this.initScorePanel()
-  //     // audio.getAudioByName(POWERUP_AUDIO).play();
-  //     this.currScore++;
-  //     this.initScorePanel();
-  // } else if (collision == -1){
-  //     // audio.getAudioByName(POWERDOWN_AUDIO).play();
-  //     this.currScore--;
-  //     this.initScorePanel();
-  //     segments.pop();
-  //     segments.pop();
-  // } else {
-  //     segments.pop();
-  // }
-  segments.pop()
+  var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
+  if (collision == 0) {
+      segments.pop();
+  } else if (collision == -1){
+      for (let i = 0; i < SHRINK_LENGTH; i++) {
+          segments.pop();
+      }
+  }
 
   segments.unshift(head);
   return true;
@@ -110,17 +88,26 @@ function isCollidesOpponent(head, otherSegments) {
 }
 
 function isCollidesFood(head, food, spoiledFood = null) {
-  if(head.x === food.x && head.y === food.y){
-      return 1;
-  } else if (spoiledFood && head.x === spoiledFood.position.x && head.y === spoiledFood.position.y) {
-      return -1;
-  } else {
-      return 0;
-  }
+    if(head.x === food.x && head.y === food.y){
+        return 1;
+    } else if (spoiledFood && head.x === spoiledFood.position.x && head.y === spoiledFood.position.y) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+function initFood(obstacles) {
+    let food = null;
+    let xPos = getRandomNumber(COLS);
+    let yPos = getRandomNumber(ROWS);
+    food = new Food(1, {x:xPos, y:yPos});
+    return food;
 }
 
 function getPlayerCount(state) {
   return Object.keys(state).length;
+
 }
 
 function update(state) {
@@ -140,5 +127,6 @@ module.exports = {
   update,
   moveSnake,
   initSnake,
-  getRandomLocation
+  getRandomLocation,
+  initFood,
 }

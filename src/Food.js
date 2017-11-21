@@ -1,9 +1,8 @@
-import Sprite from './engine/Sprite'
-
-class Food extends Sprite {
+class Food {
     constructor(size, { x, y }) {
-        super('', size, { x, y });
+        this.size = size
+        this.position = { x, y }
     }
 }
 
-export default Food
+module.exports = Food;

@@ -83,7 +83,7 @@ class SnakeGame extends Game {
         }
 
         // the food
-        drawFood(this.context, this.food, this.spoiledFood);
+        drawFood(this.context, scene.food, scene.spoiledFood);
     }
 
     debug() {
