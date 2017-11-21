@@ -41,7 +41,7 @@ function moveSnake(player, scene, state) {
   }
   // check for collision with other players
   for(let id in state) {
-    if(key === id) continue;
+    if(key === id || id === 'scene') continue;
     let other = state[id].segments;
     if(isCollidesOpponent({x: nx, y: ny}, other)) {
       return false;
@@ -106,7 +106,7 @@ function initFood(obstacles) {
 }
 
 function getPlayerCount(state) {
-  return Object.keys(state).length;
+  return Object.keys(state).length - 1;
 
 }
 
