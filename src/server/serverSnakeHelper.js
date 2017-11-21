@@ -1,19 +1,7 @@
 const { ROWS, COLS } = require('./options');
 const { getRandomNumber } = require('./operations');
-
-class Segment {
-  constructor(size, { x, y }) {
-      this.size = size
-      this.position = { x, y }
-  }
-}
-
-class Food {
-    constructor(size, { x, y }) {
-        this.size = size
-        this.position = { x, y }
-    }
-}
+const Segment = require('../Segment');
+const Food = require('../Food');
 
 function initSnake(yPos) {
   // 600 x 600 => 40 x 40
