@@ -119,10 +119,14 @@ function isCollidesFood(head, food, spoiledFood = null) {
   }
 }
 
+function getPlayerCount(state) {
+  return Object.keys(state).length;
+}
+
 function update(state) {
   const { scene } = state
   // Only run if there are at least 2 players
-  if(Object.keys(state).length < 2) return true;
+  if(getPlayerCount(state) < 2) return true;
   let result = true;
   for (let key in state) {
     if (key === 'scene')  continue
