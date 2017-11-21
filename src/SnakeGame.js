@@ -62,7 +62,6 @@ class SnakeGame extends Game {
     update() {
         // make the snake move one more step every 1 second
         // according to the direction
-        this.snakeSegments = moveSnake.call(this);
         this.food = checkFood.call(this, this.food, false);
         this.spoiledFood = checkFood.call(this, this.spoiledFood, true);
     }
@@ -110,8 +109,9 @@ class SnakeGame extends Game {
             this.render(state)
         });
 
-        this.io.on(END_GAME, () => {
+        this.io.on(END_GAME, (updateTimer) => {
             clearInterval(this.timer);
+            clearInterval(updateTimer);
             showRestartLayer(this.io); // needs to broadcast to both players
         });
 

@@ -5,6 +5,8 @@ const { update, moveSnake, initSnake, getRandomLocation } = require('./serverSna
 const { getRandomNumber } = require('./operations');
 const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART } = require('./options');
 
+var timer;
+
 function createIO(http) {
   const io = socket(http)
 
@@ -18,6 +20,7 @@ function createIO(http) {
         state[socket.id] = {
           direction: 'RIGHT',
           segments: initSnake(getRandomLocation()),
+          key: socket.id
         }
       
         socket.on(CHANGE_DIRECTION, (direction) => {
@@ -34,10 +37,10 @@ function createIO(http) {
         });
       });
 
-      setInterval(() => {
+      timer = setInterval(() => {
         let result = update(state);
         if(!result) {
-          io.sockets.emit(END_GAME);
+          io.sockets.emit(END_GAME, timer);
         } else {
           io.sockets.emit(RENDER, state);
         }
