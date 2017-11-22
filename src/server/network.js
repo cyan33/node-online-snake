@@ -46,7 +46,8 @@ function createIO(http) {
         })
       
         socket.on('disconnect', () => {
-          delete state[socket.id]
+          delete state[socket.id];
+          io.sockets.emit(RESTART);
           console.log('user disconnected');
         });
 
