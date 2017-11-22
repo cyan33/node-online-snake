@@ -14,6 +14,16 @@ function initSnake(yPos) {
   return segments;
 }
 
+function getRandomColor() {
+  const dict = '0123456789abcdef';
+  let color = '#';
+
+  for (let i = 0; i < 6; i++) {
+    color += dict[Math.floor(Math.random() * dict.length)]
+  }
+  return color;
+}
+
 function getRandomLocation() {
   return getRandomNumber(COLS - 10);
 }
@@ -127,6 +137,7 @@ module.exports = {
   update,
   moveSnake,
   initSnake,
+  getRandomColor,
   getRandomLocation,
   initFood,
   getPlayerCount
