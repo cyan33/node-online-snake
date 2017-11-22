@@ -34,7 +34,8 @@ const RESTART_CLICKED = 'restart-clicked';
 const RENDER = 'render';
 const END_GAME = 'end-game';
 const RESTART = 'restart';
+const TOGGLE_WAIT = 'toggle-wait'
 
 const SHRINK_LENGTH = 2;
 
-module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION, SHRINK_LENGTH };
+module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION, SHRINK_LENGTH, TOGGLE_WAIT };

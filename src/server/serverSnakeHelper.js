@@ -129,4 +129,5 @@ module.exports = {
   initSnake,
   getRandomLocation,
   initFood,
+  getPlayerCount
 }
