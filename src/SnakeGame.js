@@ -87,7 +87,7 @@ class SnakeGame extends Game {
         // could be multiple snakes
         for (let key in state) {
             if (key === 'scene') continue
-            drawSnake(this.context, state[key].segments)
+            drawSnake(this.context, state[key].segments, state[key].color)
         }
 
         // the food
@@ -117,7 +117,6 @@ class SnakeGame extends Game {
         });
 
         this.io.on(RENDER, (state) => {
-            console.log(state)
             this.render(state)
         });
 

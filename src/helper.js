@@ -37,18 +37,18 @@ export function initSnake() {
     return snakeSegments;
 }
 
-function drawSingleSegment(context, { x, y }) {
-    context.fillStyle = 'green';
+function drawSingleSegment(context, { x, y }, color) {
+    context.fillStyle = color;
     context.fillRect(x * SEGMENT_WIDTH, y * SEGMENT_WIDTH, SEGMENT_WIDTH, SEGMENT_WIDTH);
     context.strokeStyle = 'white';
     context.strokeRect(x * SEGMENT_WIDTH, y * SEGMENT_WIDTH, SEGMENT_WIDTH, SEGMENT_WIDTH);
 }
 
-export function drawSnake(context, snakeSegments) {
+export function drawSnake(context, snakeSegments, color) {
     context.save();
     snakeSegments.forEach(s => {
         const { x, y } = s.position;
-        drawSingleSegment(context, { x, y });
+        drawSingleSegment(context, { x, y }, color);
     })
     context.restore();
 }
