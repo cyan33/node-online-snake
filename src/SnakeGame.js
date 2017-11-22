@@ -12,7 +12,7 @@ import {
     SPOILED_FOOD_TIMEOUT
 } from './options'
 
-const { RENDER, END_GAME, RESTART, CHANGE_DIRECTION } = require('./server/options');
+const { RENDER, END_GAME, RESTART, CHANGE_DIRECTION, TOGGLE_WAIT } = require('./server/options');
 const NUM_OBSTACLES = 6;
 
 class SnakeGame extends Game {
@@ -66,6 +66,14 @@ class SnakeGame extends Game {
         this.spoiledFood = checkFood.call(this, this.spoiledFood, true);
     }
 
+    toggleWaitScreen(wait) {
+        if(wait) {
+            document.querySelector('.wait-layer').style.display = 'block';
+        } else {
+            document.querySelector('.wait-layer').style.display = 'none';
+        }
+    }
+
     render(state) {
         const { width, height } = this.canvas;
         const { scene } = state
@@ -103,6 +111,10 @@ class SnakeGame extends Game {
         this.debug();
         this.addKeyboardHandlers();
         this.initScorePanel();
+
+        this.io.on(TOGGLE_WAIT, (wait) => {
+            this.toggleWaitScreen(wait);
+        });
 
         this.io.on(RENDER, (state) => {
             console.log(state)

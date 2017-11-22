@@ -1,9 +1,9 @@
 const socket = require('socket.io');
 const state = require('./state');
 
-const { update, moveSnake, initSnake, getRandomLocation, initFood } = require('./serverSnakeHelper')
+const { update, moveSnake, initSnake, getRandomLocation, initFood, getPlayerCount } = require('./serverSnakeHelper')
 const { getRandomNumber } = require('./operations');
-const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART } = require('./options');
+const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART, TOGGLE_WAIT } = require('./options');
 
 function createIO(http) {
   const io = socket(http)
@@ -12,12 +12,21 @@ function createIO(http) {
     listen() {
       io.on('connection', (socket) => {
         console.log(`a user connected, id: ${socket.id}`);
-        // let isHost = true;
-        // if(Object.keys(state).length >= 1) isHost = false;
-        // console.log(`isHost: ${isHost}`);
+        // Determine spawn location based on current player spawns
+        let yPos;
+        let canSpawn = false;
+        while(!canSpawn) {
+          yPos = getRandomLocation();
+          if(getPlayerCount(state) < 1) break;
+          for(let key in state) {
+            if(key === 'scene') continue;
+            let check = state[key].segments[0].position.y;
+            yPos !== check? canSpawn = true : canSpawn = false;
+          }
+        }
         state[socket.id] = {
           direction: 'RIGHT',
-          segments: initSnake(getRandomLocation()),
+          segments: initSnake(yPos),
           key: socket.id
         }
         if (state.scene == null) {
@@ -25,6 +34,10 @@ function createIO(http) {
                 food: initFood(),
                 spoiledFood: initFood()
             }
+        }
+
+        if(getPlayerCount(state) >= 2) {
+          io.sockets.emit(TOGGLE_WAIT, false);
         }
 
         socket.on(CHANGE_DIRECTION, (direction) => {
