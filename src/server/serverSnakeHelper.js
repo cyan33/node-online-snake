@@ -29,10 +29,19 @@ function getRandomLocation() {
 }
 
 function moveSnake(player, scene, state) {
+  /**
+   * uses a hash as the return result of the movement
+   */
+  const status = {
+    hasCollided: false,
+    hasEatenNormalFood: false,
+    hasEatenSpoiledFood: false
+  } 
+
   const { 
-      segments,
-      direction,
-      key
+    segments,
+    direction,
+    key
   } = player;
 
   const { food, spoiledFood } = scene;
@@ -47,29 +56,36 @@ function moveSnake(player, scene, state) {
   else if (direction === 'DOWN') ny += 1;
   // check collision with itself or the wall
   if (isCollidesWall({x: nx, y: ny}) || isCollidesItself({x: nx, y: ny}, segments)) {
-    return false;
+    status.hasCollided = true;
   }
   // check for collision with other players
   for(let id in state) {
     if(key === id || id === 'scene') continue;
     let other = state[id].segments;
     if(isCollidesOpponent({x: nx, y: ny}, other)) {
-      return false;
+      status.hasCollided = true;
     }
   }
   head = new Segment({width: 1, height: 1}, { x: nx, y: ny });
   // check if it eats food
-  var collision = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
-  if (collision == 0) {
+  var foodResult = isCollidesFood({x: nx, y: ny}, food.position, spoiledFood);
+
+  if (foodResult === 0) {
+    // movement
+    segments.pop();
+  } else if (foodResult === 1) {
+    // normal food
+    status.hasEatenNormalFood = true;
+  } else if (foodResult == -1){
+    // spoiled food
+    status.hasEatenSpoiledFood = true;
+    for (let i = 0; i < SHRINK_LENGTH; i++) {
       segments.pop();
-  } else if (collision == -1){
-      for (let i = 0; i < SHRINK_LENGTH; i++) {
-          segments.pop();
-      }
+    }
   }
 
   segments.unshift(head);
-  return true;
+  return status;
 }
 
 function isCollidesWall(head) {
@@ -117,20 +133,16 @@ function initFood(obstacles) {
 
 function getPlayerCount(state) {
   return Object.keys(state).length - 1;
-
 }
 
 function update(state) {
-  const { scene } = state
-  // Only run if there are at least 2 players
-  if(getPlayerCount(state) < 2) return true;
-  let result = true;
+  const { scene } = state;
+  const results = [];
   for (let key in state) {
     if (key === 'scene')  continue
-    // If any collision occurs, update the result
-    if(!moveSnake(state[key], scene, state)) result = false;
+    results.push(moveSnake(state[key], scene, state));
   }
-  return result;
+  return results;
 }
 
 module.exports = {

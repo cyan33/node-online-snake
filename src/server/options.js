@@ -27,15 +27,20 @@ const POWERUP_AUDIO = 'powerup.mp3';
 const POWERDOWN_AUDIO = 'powerdown.mp3';
 const AUDIO = [COLLISION_AUDIO, POWERUP_AUDIO, POWERDOWN_AUDIO];
 
+const PLAY_COLLISION_SOUND = 'play_collision_sound';
+const PLAY_NORMAL_FOOD_SOUND = 'play_normal_food_sound';
+const PLAY_SPOILED_FOOD_SOUND = 'play_spoiled_food_sound';
+
 const SPOILED_FOOD_TIMEOUT = 7000;
 
-const CHANGE_DIRECTION = 'change-direction';
-const RESTART_CLICKED = 'restart-clicked';
+const CHANGE_DIRECTION = 'change_direction';
+const RESTART_CLICKED = 'restart_clicked';
 const RENDER = 'render';
-const END_GAME = 'end-game';
+const END_GAME = 'end_game';
 const RESTART = 'restart';
-const TOGGLE_WAIT = 'toggle-wait'
+const TOGGLE_WAIT = 'toggle_wait'
 
 const SHRINK_LENGTH = 2;
 
-module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION, SHRINK_LENGTH, TOGGLE_WAIT };
+module.exports = { ROWS, COLS, RESTART_CLICKED, RENDER, END_GAME, RESTART, CHANGE_DIRECTION, SHRINK_LENGTH, TOGGLE_WAIT,
+  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND};

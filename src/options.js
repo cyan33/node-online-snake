@@ -27,4 +27,15 @@ export const POWERUP_AUDIO = 'powerup.mp3';
 export const POWERDOWN_AUDIO = 'powerdown.mp3';
 export const AUDIO = [COLLISION_AUDIO, POWERUP_AUDIO, POWERDOWN_AUDIO];
 
+// event
+export const PLAY_COLLISION_SOUND = 'play_collision_sound';
+export const PLAY_NORMAL_FOOD_SOUND = 'play_normal_food_sound';
+export const PLAY_SPOILED_FOOD_SOUND = 'play_spoiled_food_sound';
+
+export const END_GAME = 'end_game';
+export const RESTART = 'restart';
+export const RENDER = 'render';
+export const TOGGLE_WAIT = 'toggle_wait';
+export const CHANGE_DIRECTION = 'change_direction';
+
 export const SPOILED_FOOD_TIMEOUT = 7000;
