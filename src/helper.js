@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Segment from './Segment'
 const { RESTART_CLICKED } = require('./server/options');
 
@@ -258,5 +259,28 @@ export function drawObstacles(context, obstacles) {
         context.fillRect(obstacle.position.x * SEGMENT_WIDTH - SEGMENT_WIDTH, obstacle.position.y * SEGMENT_WIDTH - SEGMENT_WIDTH, 
                          OBSTACLE_SIZE + SEGMENT_WIDTH, OBSTACLE_SIZE + SEGMENT_WIDTH);
         context.restore();
+    }
+}
+
+export function drawHUD(state) {
+    const scores = [];
+    for (let key in state) {
+        if (key === 'scene') continue;
+        scores.push({
+            color: state[key].color,
+            score: state[key].score
+        })
+    }
+
+    $('.score-panel').empty();
+
+    for (let i = 0; i < scores.length; i++) {
+        const ele = $(
+            `<div class="s" style="color: ${scores[i].color}">
+                <h3>Player</h3>
+                <div>${scores[i].score}</div>
+            </div>`
+        );
+        $('.score-panel').append(ele);
     }
 }

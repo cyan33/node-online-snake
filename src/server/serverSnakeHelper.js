@@ -76,9 +76,11 @@ function moveSnake(player, scene, state) {
   } else if (foodResult === 1) {
     // normal food
     status.hasEatenNormalFood = true;
+    state[key].score += 1;
   } else if (foodResult == -1){
     // spoiled food
     status.hasEatenSpoiledFood = true;
+    state[key].score -= SHRINK_LENGTH;
     for (let i = 0; i < SHRINK_LENGTH; i++) {
       segments.pop();
     }

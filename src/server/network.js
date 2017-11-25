@@ -30,6 +30,7 @@ function createIO(http) {
           direction: 'RIGHT',
           segments: initSnake(yPos),
           color: getRandomColor(),
+          score: 0,
           key: socket.id
         }
         if (!state.scene) {
