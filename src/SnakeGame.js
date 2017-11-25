@@ -4,7 +4,7 @@ import KeyBus from './engine/KeyBus'
 import Game from './engine/Game'
 import { drawWalls, drawObstacles, initAudio, initObstacles, initSnake, drawSnake, moveSnake,
     initFood, drawFood, checkFood, removeSpoiledFood, createSpoiledFood, initSpoiledFood,
-    showRestartLayer, reload } from './helper'
+    showRestartLayer, reload, drawHUD } from './helper'
 import { 
     UP, DOWN, RIGHT, LEFT,
     MOVING_SPEED, 
@@ -35,13 +35,6 @@ class SnakeGame extends Game {
         setTimeout(removeSpoiledFood.bind(this), SPOILED_FOOD_TIMEOUT, this.obstacles);
         
         this.direction = RIGHT;
-        this.currScore = 0;
-    }
-
-    initScorePanel() {
-        const highestScore = localStorage.getItem('highestScore') || 0;
-        document.querySelector('.score-panel .current .score').innerHTML = this.currScore;
-        document.querySelector('.score-panel .highest .score').innerHTML = highestScore;
     }
 
     setMovingDirection(e) {
@@ -93,6 +86,9 @@ class SnakeGame extends Game {
 
         // the food
         drawFood(this.context, scene.food, scene.spoiledFood);
+
+        // draw HUD
+        drawHUD(state);
     }
 
     debug() {
@@ -106,18 +102,17 @@ class SnakeGame extends Game {
         this.io = socket()
         this.timer = setInterval(() => {
             this.io.emit(CHANGE_DIRECTION, this.direction)
-            //this.io.emit('update');
         }, MOVING_SPEED);
 
         this.debug();
         this.addKeyboardHandlers();
-        this.initScorePanel();
 
         this.io.on(TOGGLE_WAIT, (wait) => {
             this.toggleWaitScreen(wait);
         });
 
         this.io.on(RENDER, (state) => {
+            console.log('state', state);
             this.render(state)
         });
 
