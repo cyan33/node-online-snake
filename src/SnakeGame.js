@@ -9,10 +9,11 @@ import {
     UP, DOWN, RIGHT, LEFT,
     MOVING_SPEED, 
     CANVAS_WIDTH, CANVAS_HEIGHT,
-    SPOILED_FOOD_TIMEOUT
+    SPOILED_FOOD_TIMEOUT, COLLISION_AUDIO, POWERDOWN_AUDIO, POWERUP_AUDIO,
+    PLAY_COLLISION_SOUND, PLAY_SPOILED_FOOD_SOUND, PLAY_NORMAL_FOOD_SOUND,
+    END_GAME, RENDER, TOGGLE_WAIT, CHANGE_DIRECTION, RESTART
 } from './options'
 
-const { RENDER, END_GAME, RESTART, CHANGE_DIRECTION, TOGGLE_WAIT } = require('./server/options');
 const NUM_OBSTACLES = 6;
 
 class SnakeGame extends Game {
@@ -128,6 +129,16 @@ class SnakeGame extends Game {
         this.io.on(RESTART, () => {
             reload();
         });
+
+        this.io.on(PLAY_COLLISION_SOUND, () => {
+            this.audio.getAudioByName(COLLISION_AUDIO).play();
+        })
+        this.io.on(PLAY_NORMAL_FOOD_SOUND, () => {
+            this.audio.getAudioByName(POWERUP_AUDIO).play();
+        })
+        this.io.on(PLAY_SPOILED_FOOD_SOUND, () => {
+            this.audio.getAudioByName(POWERDOWN_AUDIO).play();
+        })
     }
 }
 

@@ -3,10 +3,12 @@ const state = require('./state');
 
 const { update, moveSnake, initSnake, getRandomLocation, initFood, getPlayerCount, getRandomColor } = require('./serverSnakeHelper')
 const { getRandomNumber } = require('./operations');
-const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART, TOGGLE_WAIT } = require('./options');
+const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART, TOGGLE_WAIT,
+  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND } = require('./options');
 
 function createIO(http) {
   const io = socket(http)
+  let gameHasEnded = false;
 
   return {
     listen() {
@@ -52,18 +54,41 @@ function createIO(http) {
         });
 
         socket.on(RESTART_CLICKED, () => {
+          gameHasEnded = false;
           io.sockets.emit(RESTART);
         });
       });
 
       setInterval(() => {
-        let result = update(state);
-        if(!result) {
-          io.sockets.emit(END_GAME);
-        } else {
-          io.sockets.emit(RENDER, state);
+        let results;
+        if (!gameHasEnded && getPlayerCount(state) > 1) {
+          results = update(state);
         }
-       }, 250);
+        io.sockets.emit(RENDER, state);
+
+        // sound control
+        if (!gameHasEnded && results) {
+          for (let rs of results) {
+            const {
+              hasCollided,
+              hasEatenNormalFood,
+              hasEatenSpoiledFood
+            } = rs;
+  
+            if (hasCollided) {
+              io.sockets.emit(PLAY_COLLISION_SOUND);
+              gameHasEnded = true;
+              io.sockets.emit(END_GAME);
+            }
+            if (hasEatenNormalFood) {
+              io.sockets.emit(PLAY_NORMAL_FOOD_SOUND);
+            }
+            if (hasEatenSpoiledFood) {
+              io.sockets.emit(PLAY_SPOILED_FOOD_SOUND);
+            }
+          }
+        }
+      }, 250);
     }
   }
 }
