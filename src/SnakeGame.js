@@ -11,7 +11,7 @@ import {
     CANVAS_WIDTH, CANVAS_HEIGHT,
     SPOILED_FOOD_TIMEOUT, COLLISION_AUDIO, POWERDOWN_AUDIO, POWERUP_AUDIO,
     PLAY_COLLISION_SOUND, PLAY_SPOILED_FOOD_SOUND, PLAY_NORMAL_FOOD_SOUND,
-    END_GAME, RENDER, TOGGLE_WAIT, CHANGE_DIRECTION, RESTART
+    END_GAME, RENDER, TOGGLE_WAIT, CHANGE_DIRECTION, RESTART, GET_SESSION_ID
 } from './options'
 
 const NUM_OBSTACLES = 6;
@@ -88,7 +88,7 @@ class SnakeGame extends Game {
         drawFood(this.context, scene.food, scene.spoiledFood);
 
         // draw HUD
-        drawHUD(state);
+        drawHUD(state, this.id);
     }
 
     debug() {
@@ -112,13 +112,13 @@ class SnakeGame extends Game {
         });
 
         this.io.on(RENDER, (state) => {
-            console.log('state', state);
+            //console.log('state', state);
             this.render(state)
         });
 
-        this.io.on(END_GAME, () => {
+        this.io.on(END_GAME, (state) => {
             clearInterval(this.timer);
-            showRestartLayer(this.io); // needs to broadcast to both players
+            showRestartLayer(this.io, state);
         });
 
         this.io.on(RESTART, () => {
@@ -134,6 +134,11 @@ class SnakeGame extends Game {
         this.io.on(PLAY_SPOILED_FOOD_SOUND, () => {
             this.audio.getAudioByName(POWERDOWN_AUDIO).play();
         })
+
+        this.io.on(GET_SESSION_ID, (socketId) => {
+            console.log(`session id: ${socketId}`);
+            this.id = socketId;
+        });
     }
 }
 
