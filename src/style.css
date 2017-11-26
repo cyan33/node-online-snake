@@ -65,3 +65,14 @@
 .restart-layer button:hover, .restart-layer button:focus {
     background: linear-gradient(#079c35, #2ec56e);
 }
+
+.winner {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -40%);
+    color: white;
+    letter-spacing: 1px;
+    font-size: 30px;
+    font-weight: bold;
+}

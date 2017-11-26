@@ -4,7 +4,7 @@ const state = require('./state');
 const { update, moveSnake, initSnake, getRandomLocation, initFood, getPlayerCount, getRandomColor } = require('./serverSnakeHelper')
 const { getRandomNumber } = require('./operations');
 const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART, TOGGLE_WAIT,
-  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND } = require('./options');
+  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND, GET_SESSION_ID } = require('./options');
 
 function createIO(http) {
   const io = socket(http)
@@ -43,6 +43,7 @@ function createIO(http) {
         if(getPlayerCount(state) >= 2) {
           io.sockets.emit(TOGGLE_WAIT, false);
         }
+        socket.emit(GET_SESSION_ID, socket.id);
 
         socket.on(CHANGE_DIRECTION, (direction) => {
           state[socket.id].direction = direction
@@ -79,7 +80,7 @@ function createIO(http) {
             if (hasCollided) {
               io.sockets.emit(PLAY_COLLISION_SOUND);
               gameHasEnded = true;
-              io.sockets.emit(END_GAME);
+              io.sockets.emit(END_GAME, state);
             }
             if (hasEatenNormalFood) {
               io.sockets.emit(PLAY_NORMAL_FOOD_SOUND);

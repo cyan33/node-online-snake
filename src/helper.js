@@ -110,7 +110,30 @@ function updateLocalStorage(score) {
     }
 }
 
-export function showRestartLayer(io) {
+export function showRestartLayer(io, state) {
+    // Determine winner
+    const scores = [];
+    let winner = null;
+    let highest = Number.MIN_SAFE_INTEGER;
+    let playerId = 1;
+    for(let key in state) {
+        if(key === 'scene') continue;
+        let score = Number(state[key].score);
+        scores.push(score);
+        if(score > highest){
+            highest = score;
+            winner = `Player ${playerId} wins!`
+        }
+        playerId++;
+    }
+    // Determine if we have a draw between two or more players
+    let count = 0;
+    for(let i = 0; i < scores.length; i++) {
+        if(scores[i] == highest) count++;
+    }
+    if(count >= 2) winner = 'Draw';
+
+    document.querySelector('.restart-layer .winner').textContent = winner;
     document.querySelector('.restart-layer').style.display = 'block';
     document.querySelector("button").addEventListener("click", () => {
         io.emit(RESTART_CLICKED);
@@ -262,22 +285,23 @@ export function drawObstacles(context, obstacles) {
     }
 }
 
-export function drawHUD(state) {
+export function drawHUD(state, session) {
     const scores = [];
     for (let key in state) {
         if (key === 'scene') continue;
         scores.push({
             color: state[key].color,
-            score: state[key].score
+            score: state[key].score,
+            display: (session === key)? 'Player (you)' : 'Player'
         })
     }
 
     $('.score-panel').empty();
 
     for (let i = 0; i < scores.length; i++) {
-        const ele = $(
+        let ele = $(
             `<div class="s" style="color: ${scores[i].color}">
-                <h3>Player</h3>
+                <h3>${scores[i].display}</h3>
                 <div>${scores[i].score}</div>
             </div>`
         );

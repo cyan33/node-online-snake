@@ -37,5 +37,6 @@ export const RESTART = 'restart';
 export const RENDER = 'render';
 export const TOGGLE_WAIT = 'toggle_wait';
 export const CHANGE_DIRECTION = 'change_direction';
+export const GET_SESSION_ID = 'get_session_id';
 
 export const SPOILED_FOOD_TIMEOUT = 7000;
