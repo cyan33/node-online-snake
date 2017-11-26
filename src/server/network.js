@@ -84,9 +84,11 @@ function createIO(http) {
             }
             if (hasEatenNormalFood) {
               io.sockets.emit(PLAY_NORMAL_FOOD_SOUND);
+              state.scene.food = initFood();
             }
             if (hasEatenSpoiledFood) {
               io.sockets.emit(PLAY_SPOILED_FOOD_SOUND);
+              state.scene.spoiledFood = initFood();
             }
           }
         }
