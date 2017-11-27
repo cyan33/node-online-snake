@@ -95,9 +95,9 @@ function createIO(http) {
       }, 250);
 
       setInterval(() => {
-        if (state.scene.spoiledFood){
+        if (!gameHasEnded && state.scene.spoiledFood){
           state.scene.spoiledFood = null;
-        } else {
+        } else if (!gameHasEnded) {
           state.scene.spoiledFood = initFood();
         }
       }, SPOILED_FOOD_TIMEOUT);
