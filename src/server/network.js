@@ -94,13 +94,13 @@ function createIO(http) {
         }
       }, 250);
 
-        setInterval(() => {
-            if (state.scene.spoiledFood){
-                state.scene.spoiledFood = null;
-            } else {
-                state.scene.spoiledFood = initFood();
-            }
-        }, SPOILED_FOOD_TIMEOUT);
+      setInterval(() => {
+        if (state.scene.spoiledFood){
+          state.scene.spoiledFood = null;
+        } else {
+          state.scene.spoiledFood = initFood();
+        }
+      }, SPOILED_FOOD_TIMEOUT);
     }
   }
 }
