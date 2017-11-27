@@ -4,7 +4,7 @@ const state = require('./state');
 const { update, moveSnake, initSnake, getRandomLocation, initFood, getPlayerCount, getRandomColor } = require('./serverSnakeHelper')
 const { getRandomNumber } = require('./operations');
 const { CHANGE_DIRECTION, RESTART_CLICKED, END_GAME, RENDER, RESTART, TOGGLE_WAIT,
-  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND, GET_SESSION_ID } = require('./options');
+  PLAY_COLLISION_SOUND, PLAY_NORMAL_FOOD_SOUND, PLAY_SPOILED_FOOD_SOUND, GET_SESSION_ID, SPOILED_FOOD_TIMEOUT } = require('./options');
 
 function createIO(http) {
   const io = socket(http)
@@ -93,6 +93,14 @@ function createIO(http) {
           }
         }
       }, 250);
+
+        setInterval(() => {
+            if (state.scene.spoiledFood){
+              state.scene.spoiledFood = null;
+            } else {
+              state.scene.spoiledFood = initFood();
+            }
+        }, SPOILED_FOOD_TIMEOUT);
     }
   }
 }
