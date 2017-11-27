@@ -96,9 +96,9 @@ function createIO(http) {
 
         setInterval(() => {
             if (state.scene.spoiledFood){
-              state.scene.spoiledFood = null;
+                state.scene.spoiledFood = null;
             } else {
-              state.scene.spoiledFood = initFood();
+                state.scene.spoiledFood = initFood();
             }
         }, SPOILED_FOOD_TIMEOUT);
     }
